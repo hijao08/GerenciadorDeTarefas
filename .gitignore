@@ -1,0 +1,16 @@
+# Arquivos compilados
+*.o
+*.out
+*.exe
+gerenciador
+
+# Arquivos de IDE
+.vscode/
+.idea/
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Arquivos de debug
+*.dSYM/ 
