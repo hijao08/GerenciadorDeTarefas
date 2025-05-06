@@ -13,7 +13,7 @@ Um aplicativo de linha de comando em C para gerenciar tarefas e compromissos.
 ## Como Compilar
 
 ```bash
-gcc -o gerenciador src/*.c
+g++ {nome do arquivo .cpp} -o {nome do arquivo compilado desejado}
 ```
 
 ## Como Usar
@@ -24,5 +24,5 @@ gcc -o gerenciador src/*.c
 
 ## Requisitos
 
-- GCC ou outro compilador C
+- GCC ou outro compilador C++
 - Sistema operacional Unix-like (Linux, macOS)
