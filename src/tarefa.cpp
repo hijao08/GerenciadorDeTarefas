@@ -1,25 +1,40 @@
 #include "tarefa.h"
-#include <cstdio>
-#include <cstdlib>
+#include <iostream>
 #include <cstring>
 
+using namespace std;
+
 Tarefa* criar_tarefa(int id, const char* titulo, const char* descricao, int prioridade, const char* data) {
-    Tarefa* nova = (Tarefa*)malloc(sizeof(Tarefa));
-    if (!nova) return nullptr;
-    nova->id = id;
-    strncpy(nova->titulo, titulo, MAX_TITULO-1);
-    nova->titulo[MAX_TITULO-1] = '\0';
-    strncpy(nova->descricao, descricao, MAX_DESC-1);
-    nova->descricao[MAX_DESC-1] = '\0';
-    nova->prioridade = prioridade;
-    strncpy(nova->data, data, MAX_DATA-1);
-    nova->data[MAX_DATA-1] = '\0';
-    nova->proxima = nullptr;
+    Tarefa* nova = new Tarefa;
+    if (nova) {
+        nova->id = id;
+        strcpy(nova->titulo, titulo);
+        strcpy(nova->descricao, descricao);
+        nova->prioridade = prioridade;
+        strcpy(nova->data, data);
+        nova->concluida = false;
+        nova->proxima = nullptr;
+    }
     return nova;
 }
 
 void imprimir_tarefa(const Tarefa* tarefa) {
-    if (!tarefa) return;
-    printf("\n ID: %d\nTítulo: %s\nDescrição: %s\nPrioridade: %d\nData: %s\n",
-           tarefa->id, tarefa->titulo, tarefa->descricao, tarefa->prioridade, tarefa->data);
+    cout << "ID: " << tarefa->id << endl;
+    cout << "Título: " << tarefa->titulo << endl;
+    cout << "Descrição: " << tarefa->descricao << endl;
+    cout << "Prioridade: " << tarefa->prioridade << endl;
+    cout << "Data: " << tarefa->data << endl;
+    cout << "Status: " << (tarefa->concluida ? "Concluída" : "Pendente") << endl;
+}
+
+void marcar_concluida(Tarefa* tarefa) {
+    if (tarefa) {
+        tarefa->concluida = true;
+    }
+}
+
+void marcar_nao_concluida(Tarefa* tarefa) {
+    if (tarefa) {
+        tarefa->concluida = false;
+    }
 }

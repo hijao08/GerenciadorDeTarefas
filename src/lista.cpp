@@ -1,6 +1,7 @@
 #include "lista.h"
-#include <cstdio>
-#include <cstdlib>
+#include <iostream>
+
+using namespace std;
 
 void inicializar_lista(Lista* lista) {
     lista->inicio = nullptr;
@@ -21,13 +22,31 @@ void inserir_fim(Lista* lista, Tarefa* tarefa) {
 void listar_tarefas(const Lista* lista) {
     Tarefa* atual = lista->inicio;
     if (!atual) {
-        printf("Lista vazia!\n");
+        cout << "Lista vazia!" << endl;
         return;
     }
     while (atual) {
         imprimir_tarefa(atual);
-        printf("---------------------\n");
+        cout << "---------------------" << endl;
         atual = atual->proxima;
+    }
+}
+
+void listar_tarefas_por_prioridade(const Lista* lista, int prioridade) {
+    Tarefa* atual = lista->inicio;
+    bool encontrou = false;
+    
+    while (atual) {
+        if (atual->prioridade == prioridade) {
+            imprimir_tarefa(atual);
+            cout << "---------------------" << endl;
+            encontrou = true;
+        }
+        atual = atual->proxima;
+    }
+    
+    if (!encontrou) {
+        cout << "Nenhuma tarefa encontrada com prioridade " << prioridade << "!" << endl;
     }
 }
 
@@ -41,7 +60,7 @@ int remover_tarefa(Lista* lista, int id) {
             } else {
                 lista->inicio = atual->proxima;
             }
-            free(atual);
+            delete atual;
             return 1;
         }
         anterior = atual;

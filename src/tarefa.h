@@ -11,10 +11,13 @@ typedef struct Tarefa {
     char descricao[MAX_DESC];
     int prioridade;
     char data[MAX_DATA];
-    Tarefa* proxima;
+    int concluida;  // 0 = não concluída, 1 = concluída
+    struct Tarefa* proxima;
 } Tarefa;
 
 Tarefa* criar_tarefa(int id, const char* titulo, const char* descricao, int prioridade, const char* data);
 void imprimir_tarefa(const Tarefa* tarefa);
+void marcar_concluida(Tarefa* tarefa);
+void marcar_nao_concluida(Tarefa* tarefa);
 
 #endif
