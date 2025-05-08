@@ -1,10 +1,26 @@
 // pilha.h
-typedef struct {
-    Tarefa *dados[100];
-    int topo;
-} Pilha;
+#ifndef PILHA_H
+#define PILHA_H
 
-void inicializar_pilha(Pilha *pilha);
-void push(Pilha *pilha, Tarefa *tarefa);
-Tarefa* pop(Pilha *pilha);
+#include "tarefa.h"
+
+template<typename T>
+class Pilha {
+private:
+    T* elementos;
+    int topo;
+    int capacidade;
+
+public:
+    Pilha(int tamanho = 100);
+    ~Pilha();
+    void empilhar(T elemento);
+    T desempilhar();
+    T topoPilha();
+    bool vazia();
+    bool cheia();
+    int tamanho();
+};
+
+#endif
 
