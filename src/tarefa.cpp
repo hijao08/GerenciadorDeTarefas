@@ -20,6 +20,6 @@ Tarefa* criar_tarefa(int id, const char* titulo, const char* descricao, int prio
 
 void imprimir_tarefa(const Tarefa* tarefa) {
     if (!tarefa) return;
-    printf("ID: %d\nTítulo: %s\nDescrição: %s\nPrioridade: %d\nData: %s\n",
+    printf("\n ID: %d\nTítulo: %s\nDescrição: %s\nPrioridade: %d\nData: %s\n",
            tarefa->id, tarefa->titulo, tarefa->descricao, tarefa->prioridade, tarefa->data);
 }
