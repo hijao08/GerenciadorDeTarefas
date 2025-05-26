@@ -1,6 +1,108 @@
 # Gerenciador de Tarefas
 
-Um aplicativo de linha de comando em C++ para gerenciar tarefas e compromissos de forma eficiente.
+Um sistema de gerenciamento de tarefas implementado em C++ que utiliza diferentes estruturas de dados para organizar e manipular tarefas.
+
+## Estruturas de Dados Utilizadas
+
+### Lista Encadeada
+
+- Utilizada para armazenar todas as tarefas do sistema
+- Permite inserção e remoção eficiente de tarefas
+- Mantém as tarefas organizadas por ordem de inserção
+
+### Pilha
+
+- Utilizada para implementar o sistema de "desfazer" ações
+- Armazena as últimas ações realizadas (adição ou remoção de tarefas)
+- Permite desfazer a última ação realizada
+
+### Fila
+
+- Utilizada para gerenciar tarefas pendentes
+- Implementa o conceito FIFO (First In, First Out)
+- Permite organizar tarefas que precisam ser processadas em ordem
+
+## Funcionalidades do Menu
+
+### 1. Cadastrar tarefa
+
+- **Estrutura utilizada**: Lista Encadeada e Pilha
+- **Funcionalidade**: Permite adicionar uma nova tarefa ao sistema
+- **Detalhes**:
+  - Solicita título, descrição, prioridade e data
+  - Armazena na lista encadeada
+  - Registra a ação na pilha para possível desfazer
+
+### 2. Listar tarefas
+
+- **Estrutura utilizada**: Lista Encadeada
+- **Funcionalidade**: Exibe todas as tarefas cadastradas
+- **Detalhes**: Mostra ID, título, descrição, prioridade e data de cada tarefa
+
+### 3. Remover tarefa
+
+- **Estrutura utilizada**: Lista Encadeada e Pilha
+- **Funcionalidade**: Remove uma tarefa específica do sistema
+- **Detalhes**:
+  - Solicita o ID da tarefa a ser removida
+  - Remove da lista encadeada
+  - Registra a ação na pilha para possível desfazer
+
+### 4. Desfazer última ação
+
+- **Estrutura utilizada**: Pilha
+- **Funcionalidade**: Desfaz a última ação realizada (adição ou remoção)
+- **Detalhes**:
+  - Recupera a última ação da pilha
+  - Restaura o estado anterior do sistema
+
+### 5. Adicionar tarefa à fila de pendentes
+
+- **Estrutura utilizada**: Fila
+- **Funcionalidade**: Adiciona uma tarefa existente à fila de pendentes
+- **Detalhes**:
+  - Solicita o ID da tarefa
+  - Adiciona à fila para processamento posterior
+
+### 6. Processar próxima tarefa pendente
+
+- **Estrutura utilizada**: Fila
+- **Funcionalidade**: Processa a próxima tarefa da fila de pendentes
+- **Detalhes**:
+  - Remove a primeira tarefa da fila
+  - Exibe os detalhes da tarefa para processamento
+
+### 7. Sair
+
+- **Funcionalidade**: Encerra o programa
+- **Detalhes**: Libera toda a memória alocada antes de encerrar
+
+## Compilação e Execução
+
+Para compilar o projeto:
+
+```bash
+g++ -o gerenciador src/*.cpp
+```
+
+Para executar:
+
+```bash
+./gerenciador
+```
+
+## Requisitos
+
+- Compilador C++ (g++ recomendado)
+- Sistema operacional compatível com C++
+
+## Limitações
+
+- Capacidade máxima de 100 tarefas na pilha
+- Capacidade máxima de 100 tarefas na fila
+- Tamanho máximo do título: 100 caracteres
+- Tamanho máximo da descrição: 500 caracteres
+- Tamanho máximo da data: 11 caracteres (formato dd/mm/aaaa)
 
 ## 📋 Funcionalidades
 
@@ -87,7 +189,7 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ## 👥 Autores
 
-- Seu Nome - [@seu-usuario](https://github.com/seu-usuario)
+- João Vitor Soares - [@seu-usuario](https://github.com/hijao08)
 
 ## 🙏 Agradecimentos
 

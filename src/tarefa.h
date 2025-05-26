@@ -11,6 +11,7 @@ typedef struct Tarefa {
     char descricao[MAX_DESC];
     int prioridade;
     char data[MAX_DATA];
+    int concluida;  // 0 = não concluída, 1 = concluída
     Tarefa* proxima;
 } Tarefa;
 

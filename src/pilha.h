@@ -1,4 +1,6 @@
 // pilha.h
+#include "tarefa.h"
+
 typedef struct {
     Tarefa *dados[100];
     int topo;

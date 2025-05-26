@@ -10,6 +10,7 @@ typedef struct {
 void inicializar_lista(Lista* lista);
 void inserir_fim(Lista* lista, Tarefa* tarefa);
 void listar_tarefas(const Lista* lista);
-int remover_tarefa(Lista* lista, int id);
+Tarefa* remover_tarefa(Lista* lista, int id);
+Tarefa* buscar_tarefa(Lista* lista, int id);
 
 #endif
