@@ -51,7 +51,7 @@ Um sistema de gerenciamento de tarefas implementado em C, utilizando estruturas 
 ### 9. Processar tarefas na ordem de cadastro
 
 - **Estrutura utilizada**: Fila
-- **Como funciona**: Processa as tarefas na ordem em que foram cadastradas, usando a estrutura FIFO (First In, First Out)
+- **Como funciona**: Processa as tarefas na ordem em que foram cadastradas, usando a estrutura FIFO (First In, First Out) (em desenvolvimento)
 
 ### 10. Salvar tarefas
 
