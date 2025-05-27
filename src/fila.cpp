@@ -1,68 +1,64 @@
 #include "fila.h"
-#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
 
-using namespace std;
-
-template<typename T>
-Fila<T>::Fila(int tamanho) {
-    elementos = new T[tamanho];
-    capacidade = tamanho;
-    frente = 0;
-    tras = -1;
-    tamanho_atual = 0;
+void inicializar_fila(Fila* fila) {
+    fila->elementos = (Tarefa**)malloc(MAX_FILA * sizeof(Tarefa*));
+    if (fila->elementos == NULL) {
+        printf("Erro ao alocar memória para a fila!\n");
+        exit(1);
+    }
+    fila->frente = 0;
+    fila->tras = -1;
+    fila->capacidade = MAX_FILA;
+    fila->tamanho_atual = 0;
 }
 
-template<typename T>
-Fila<T>::~Fila() {
-    delete[] elementos;
+void destruir_fila(Fila* fila) {
+    free(fila->elementos);
+    fila->elementos = NULL;
+    fila->frente = 0;
+    fila->tras = -1;
+    fila->capacidade = 0;
+    fila->tamanho_atual = 0;
 }
 
-template<typename T>
-void Fila<T>::enfileirar(T elemento) {
-    if (!cheia()) {
-        tras = (tras + 1) % capacidade;
-        elementos[tras] = elemento;
-        tamanho_atual++;
+void enfileirar(Fila* fila, Tarefa* elemento) {
+    if (!fila_cheia(fila)) {
+        fila->tras = (fila->tras + 1) % fila->capacidade;
+        fila->elementos[fila->tras] = elemento;
+        fila->tamanho_atual++;
     } else {
-        cout << "Erro: Fila cheia!" << endl;
+        printf("Erro: Fila cheia!\n");
     }
 }
 
-template<typename T>
-T Fila<T>::desenfileirar() {
-    if (!vazia()) {
-        T elemento = elementos[frente];
-        frente = (frente + 1) % capacidade;
-        tamanho_atual--;
+Tarefa* desenfileirar(Fila* fila) {
+    if (!fila_vazia(fila)) {
+        Tarefa* elemento = fila->elementos[fila->frente];
+        fila->frente = (fila->frente + 1) % fila->capacidade;
+        fila->tamanho_atual--;
         return elemento;
     }
-    cout << "Erro: Fila vazia!" << endl;
-    return nullptr;
+    printf("Erro: Fila vazia!\n");
+    return NULL;
 }
 
-template<typename T>
-T Fila<T>::primeiro() {
-    if (!vazia()) {
-        return elementos[frente];
+Tarefa* primeiro_fila(Fila* fila) {
+    if (!fila_vazia(fila)) {
+        return fila->elementos[fila->frente];
     }
-    cout << "Erro: Fila vazia!" << endl;
-    return nullptr;
+    return NULL;
 }
 
-template<typename T>
-bool Fila<T>::vazia() {
-    return tamanho_atual == 0;
+int fila_vazia(Fila* fila) {
+    return fila->tamanho_atual == 0;
 }
 
-template<typename T>
-bool Fila<T>::cheia() {
-    return tamanho_atual == capacidade;
+int fila_cheia(Fila* fila) {
+    return fila->tamanho_atual == fila->capacidade;
 }
 
-template<typename T>
-int Fila<T>::tamanho() {
-    return tamanho_atual;
-}
-
-// Instanciação explícita para Tarefa*
-template class Fila<Tarefa*>;
+int tamanho_fila(Fila* fila) {
+    return fila->tamanho_atual;
+} 

@@ -1,11 +1,9 @@
-#include <iostream>
-#include <string>
-#include <cstring>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "lista.h"
 #include "pilha.h"
 #include "fila.h"
-
-using namespace std;
 
 int gerar_id(Lista* lista) {
     int max_id = 0;
@@ -18,109 +16,115 @@ int gerar_id(Lista* lista) {
 }
 
 void menu() {
-    cout << "\n==== Gerenciador de Tarefas ====" << endl;
-    cout << "1. Cadastrar tarefa" << endl;
-    cout << "2. Listar todas as tarefas" << endl;
-    cout << "3. Listar tarefas por prioridade" << endl;
-    cout << "4. Buscar tarefa" << endl;
-    cout << "5. Editar tarefa" << endl;
-    cout << "6. Remover tarefa" << endl;
-    cout << "7. Marcar tarefa como concluída" << endl;
-    cout << "8. Desfazer última ação" << endl;
-    cout << "9. Salvar tarefas" << endl;
-    cout << "10. Carregar tarefas" << endl;
-    cout << "0. Sair" << endl;
-    cout << "Escolha uma opção: ";
+    printf("\n==== Gerenciador de Tarefas ====\n");
+    printf("1. Cadastrar tarefa\n");
+    printf("2. Listar todas as tarefas\n");
+    printf("3. Listar tarefas por prioridade\n");
+    printf("4. Buscar tarefa\n");
+    printf("5. Editar tarefa\n");
+    printf("6. Remover tarefa\n");
+    printf("7. Marcar tarefa como concluída\n");
+    printf("8. Desfazer última ação\n");
+    printf("9. Salvar tarefas\n");
+    printf("10. Carregar tarefas\n");
+    printf("0. Sair\n");
+    printf("Escolha uma opção: ");
 }
 
-// Função para validar data
-bool validar_data(const string& data) {
+int validar_data(const char* data) {
     int dia, mes, ano;
-    if (sscanf(data.c_str(), "%d/%d/%d", &dia, &mes, &ano) != 3) return false;
-    if (dia < 1 || dia > 31) return false;
-    if (mes < 1 || mes > 12) return false;
-    if (ano < 2000 || ano > 2100) return false;
-    return true;
+    if (sscanf(data, "%d/%d/%d", &dia, &mes, &ano) != 3) return 0;
+    if (dia < 1 || dia > 31) return 0;
+    if (mes < 1 || mes > 12) return 0;
+    if (ano < 2000 || ano > 2100) return 0;
+    return 1;
 }
 
-// Função para validar prioridade
-bool validar_prioridade(int prioridade) {
+int validar_prioridade(int prioridade) {
     return prioridade >= 1 && prioridade <= 5;
 }
 
-// Função para buscar tarefa
 Tarefa* buscar_tarefa(Lista* lista, int id) {
     Tarefa* atual = lista->inicio;
     while (atual) {
         if (atual->id == id) return atual;
         atual = atual->proxima;
     }
-    return nullptr;
+    return NULL;
 }
 
-// Função para editar tarefa
 void editar_tarefa(Tarefa* tarefa) {
-    string titulo, descricao, data;
+    char titulo[MAX_TITULO], descricao[MAX_DESC], data[MAX_DATA];
     int prioridade;
 
-    cout << "Novo título (ou Enter para manter '" << tarefa->titulo << "'): ";
-    getline(cin, titulo);
-    if (!titulo.empty()) strcpy(tarefa->titulo, titulo.c_str());
+    printf("Novo título (ou Enter para manter '%s'): ", tarefa->titulo);
+    fgets(titulo, MAX_TITULO, stdin);
+    titulo[strcspn(titulo, "\n")] = 0;
+    if (strlen(titulo) > 0) strcpy(tarefa->titulo, titulo);
 
-    cout << "Nova descrição (ou Enter para manter '" << tarefa->descricao << "'): ";
-    getline(cin, descricao);
-    if (!descricao.empty()) strcpy(tarefa->descricao, descricao.c_str());
+    printf("Nova descrição (ou Enter para manter '%s'): ", tarefa->descricao);
+    fgets(descricao, MAX_DESC, stdin);
+    descricao[strcspn(descricao, "\n")] = 0;
+    if (strlen(descricao) > 0) strcpy(tarefa->descricao, descricao);
 
-    cout << "Nova prioridade (1-5) (ou 0 para manter " << tarefa->prioridade << "): ";
-    cin >> prioridade;
-    cin.ignore();
+    printf("Nova prioridade (1-5) (ou 0 para manter %d): ", tarefa->prioridade);
+    scanf("%d", &prioridade);
+    getchar();
     if (prioridade > 0 && validar_prioridade(prioridade)) tarefa->prioridade = prioridade;
 
-    cout << "Nova data (dd/mm/aaaa) (ou Enter para manter '" << tarefa->data << "'): ";
-    getline(cin, data);
-    if (!data.empty() && validar_data(data)) strcpy(tarefa->data, data.c_str());
+    printf("Nova data (dd/mm/aaaa) (ou Enter para manter '%s'): ", tarefa->data);
+    fgets(data, MAX_DATA, stdin);
+    data[strcspn(data, "\n")] = 0;
+    if (strlen(data) > 0 && validar_data(data)) strcpy(tarefa->data, data);
 }
 
 int main() {
     Lista lista;
-    Pilha<Tarefa*> pilhaAcoes;
-    Fila<Tarefa*> filaPrioridade;
+    Pilha pilhaAcoes;
+    Fila filaPrioridade;
     
     inicializar_lista(&lista);
+    inicializar_pilha(&pilhaAcoes);
+    inicializar_fila(&filaPrioridade);
     
     int opcao, prioridade, id;
-    string titulo, descricao, data;
-    Tarefa* novaTarefa = nullptr;
-    Tarefa* encontrada = nullptr;
+    char titulo[MAX_TITULO], descricao[MAX_DESC], data[MAX_DATA];
+    Tarefa* novaTarefa = NULL;
+    Tarefa* encontrada = NULL;
 
     do {
         menu();
-        cin >> opcao;
-        cin.ignore(); // Limpar buffer
+        scanf("%d", &opcao);
+        getchar(); // Limpar buffer
 
         switch (opcao) {
             case 1: // Cadastrar tarefa
-                cout << "Título: ";
-                getline(cin, titulo);
-                cout << "Descrição: ";
-                getline(cin, descricao);
+                printf("Título: ");
+                fgets(titulo, MAX_TITULO, stdin);
+                titulo[strcspn(titulo, "\n")] = 0;
+                
+                printf("Descrição: ");
+                fgets(descricao, MAX_DESC, stdin);
+                descricao[strcspn(descricao, "\n")] = 0;
+                
                 do {
-                    cout << "Prioridade (1-5): ";
-                    cin >> prioridade;
-                    cin.ignore();
+                    printf("Prioridade (1-5): ");
+                    scanf("%d", &prioridade);
+                    getchar();
                 } while (!validar_prioridade(prioridade));
                 
                 do {
-                    cout << "Data (dd/mm/aaaa): ";
-                    getline(cin, data);
+                    printf("Data (dd/mm/aaaa): ");
+                    fgets(data, MAX_DATA, stdin);
+                    data[strcspn(data, "\n")] = 0;
                 } while (!validar_data(data));
                 
                 id = gerar_id(&lista);
-                novaTarefa = criar_tarefa(id, titulo.c_str(), descricao.c_str(), prioridade, data.c_str());
+                novaTarefa = criar_tarefa(id, titulo, descricao, prioridade, data);
                 inserir_fim(&lista, novaTarefa);
-                filaPrioridade.enfileirar(novaTarefa);
-                pilhaAcoes.empilhar(novaTarefa);
-                cout << "Tarefa cadastrada com sucesso!" << endl;
+                enfileirar(&filaPrioridade, novaTarefa);
+                empilhar(&pilhaAcoes, novaTarefa);
+                printf("Tarefa cadastrada com sucesso!\n");
                 break;
 
             case 2: // Listar todas as tarefas
@@ -128,87 +132,86 @@ int main() {
                 break;
 
             case 3: // Listar por prioridade
-                cout << "Informe a prioridade (1-5): ";
-                cin >> prioridade;
-                cin.ignore();
+                printf("Informe a prioridade (1-5): ");
+                scanf("%d", &prioridade);
+                getchar();
                 if (validar_prioridade(prioridade)) {
                     listar_tarefas_por_prioridade(&lista, prioridade);
                 } else {
-                    cout << "Prioridade inválida!" << endl;
+                    printf("Prioridade inválida!\n");
                 }
                 break;
 
             case 4: // Buscar tarefa
-                cout << "Informe o ID da tarefa: ";
-                cin >> id;
-                cin.ignore();
+                printf("Informe o ID da tarefa: ");
+                scanf("%d", &id);
+                getchar();
                 encontrada = buscar_tarefa(&lista, id);
                 if (encontrada) {
                     imprimir_tarefa(encontrada);
                 } else {
-                    cout << "Tarefa não encontrada!" << endl;
+                    printf("Tarefa não encontrada!\n");
                 }
                 break;
 
             case 5: // Editar tarefa
-                cout << "Informe o ID da tarefa: ";
-                cin >> id;
-                cin.ignore();
+                printf("Informe o ID da tarefa: ");
+                scanf("%d", &id);
+                getchar();
                 encontrada = buscar_tarefa(&lista, id);
                 if (encontrada) {
                     editar_tarefa(encontrada);
-                    cout << "Tarefa atualizada com sucesso!" << endl;
+                    printf("Tarefa atualizada com sucesso!\n");
                 } else {
-                    cout << "Tarefa não encontrada!" << endl;
+                    printf("Tarefa não encontrada!\n");
                 }
                 break;
 
             case 6: // Remover tarefa
-                cout << "Informe o ID da tarefa a remover: ";
-                cin >> id;
+                printf("Informe o ID da tarefa a remover: ");
+                scanf("%d", &id);
                 if (remover_tarefa(&lista, id)) {
-                    cout << "Tarefa removida!" << endl;
-                    // TODO: Atualizar pilha de ações
+                    printf("Tarefa removida!\n");
                 } else {
-                    cout << "Tarefa não encontrada." << endl;
+                    printf("Tarefa não encontrada.\n");
                 }
                 break;
 
             case 7: // Marcar como concluída
-                cout << "Informe o ID da tarefa: ";
-                cin >> id;
-                cin.ignore();
+                printf("Informe o ID da tarefa: ");
+                scanf("%d", &id);
+                getchar();
                 encontrada = buscar_tarefa(&lista, id);
                 if (encontrada) {
                     if (encontrada->concluida) {
-                        cout << "Tarefa já está concluída!" << endl;
+                        printf("Tarefa já está concluída!\n");
                     } else {
                         marcar_concluida(encontrada);
-                        cout << "Tarefa marcada como concluída!" << endl;
+                        printf("Tarefa marcada como concluída!\n");
                     }
                 } else {
-                    cout << "Tarefa não encontrada!" << endl;
+                    printf("Tarefa não encontrada!\n");
                 }
                 break;
 
             case 8: // Desfazer última ação
-                cout << "Funcionalidade em desenvolvimento..." << endl;
+                printf("Funcionalidade em desenvolvimento...\n");
                 break;
 
             case 9: // Salvar tarefas
-                cout << "Funcionalidade em desenvolvimento..." << endl;
+                printf("Funcionalidade em desenvolvimento...\n");
                 break;
 
             case 10: // Carregar tarefas
-                cout << "Funcionalidade em desenvolvimento..." << endl;
+                printf("Funcionalidade em desenvolvimento...\n");
                 break;
 
             case 0:
-                cout << "Saindo..." << endl;
+                printf("Saindo...\n");
                 break;
 
             default:
-                cout << "Opção inválida!" << endl;
+                printf("Opção inválida!\n");
         }
     } while (opcao != 0);
 
@@ -217,8 +220,11 @@ int main() {
     while (atual) {
         Tarefa* tmp = atual;
         atual = atual->proxima;
-        delete tmp;
+        free(tmp);
     }
 
+    destruir_pilha(&pilhaAcoes);
+    destruir_fila(&filaPrioridade);
+
     return 0;
-}
+} 

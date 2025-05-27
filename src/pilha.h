@@ -4,23 +4,22 @@
 
 #include "tarefa.h"
 
-template<typename T>
-class Pilha {
-private:
-    T* elementos;
+#define MAX_PILHA 100
+
+typedef struct {
+    Tarefa** elementos;
     int topo;
     int capacidade;
+} Pilha;
 
-public:
-    Pilha(int tamanho = 100);
-    ~Pilha();
-    void empilhar(T elemento);
-    T desempilhar();
-    T topoPilha();
-    bool vazia();
-    bool cheia();
-    int tamanho();
-};
+void inicializar_pilha(Pilha* pilha);
+void destruir_pilha(Pilha* pilha);
+void empilhar(Pilha* pilha, Tarefa* elemento);
+Tarefa* desempilhar(Pilha* pilha);
+Tarefa* topo_pilha(Pilha* pilha);
+int pilha_vazia(Pilha* pilha);
+int pilha_cheia(Pilha* pilha);
+int tamanho_pilha(Pilha* pilha);
 
 #endif
 

@@ -3,24 +3,23 @@
 
 #include "tarefa.h"
 
-template<typename T>
-class Fila {
-private:
-    T* elementos;
+#define MAX_FILA 100
+
+typedef struct {
+    Tarefa** elementos;
     int frente;
     int tras;
     int capacidade;
     int tamanho_atual;
+} Fila;
 
-public:
-    Fila(int tamanho = 100);
-    ~Fila();
-    void enfileirar(T elemento);
-    T desenfileirar();
-    T primeiro();
-    bool vazia();
-    bool cheia();
-    int tamanho();
-};
+void inicializar_fila(Fila* fila);
+void destruir_fila(Fila* fila);
+void enfileirar(Fila* fila, Tarefa* elemento);
+Tarefa* desenfileirar(Fila* fila);
+Tarefa* primeiro_fila(Fila* fila);
+int fila_vazia(Fila* fila);
+int fila_cheia(Fila* fila);
+int tamanho_fila(Fila* fila);
 
 #endif

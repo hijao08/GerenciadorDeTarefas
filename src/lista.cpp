@@ -1,10 +1,9 @@
 #include "lista.h"
-#include <iostream>
-
-using namespace std;
+#include <stdio.h>
+#include <stdlib.h>
 
 void inicializar_lista(Lista* lista) {
-    lista->inicio = nullptr;
+    lista->inicio = NULL;
 }
 
 void inserir_fim(Lista* lista, Tarefa* tarefa) {
@@ -22,37 +21,37 @@ void inserir_fim(Lista* lista, Tarefa* tarefa) {
 void listar_tarefas(const Lista* lista) {
     Tarefa* atual = lista->inicio;
     if (!atual) {
-        cout << "Lista vazia!" << endl;
+        printf("Lista vazia!\n");
         return;
     }
     while (atual) {
         imprimir_tarefa(atual);
-        cout << "---------------------" << endl;
+        printf("---------------------\n");
         atual = atual->proxima;
     }
 }
 
 void listar_tarefas_por_prioridade(const Lista* lista, int prioridade) {
     Tarefa* atual = lista->inicio;
-    bool encontrou = false;
+    int encontrou = 0;
     
     while (atual) {
         if (atual->prioridade == prioridade) {
             imprimir_tarefa(atual);
-            cout << "---------------------" << endl;
-            encontrou = true;
+            printf("---------------------\n");
+            encontrou = 1;
         }
         atual = atual->proxima;
     }
     
     if (!encontrou) {
-        cout << "Nenhuma tarefa encontrada com prioridade " << prioridade << "!" << endl;
+        printf("Nenhuma tarefa encontrada com prioridade %d!\n", prioridade);
     }
 }
 
 int remover_tarefa(Lista* lista, int id) {
     Tarefa* atual = lista->inicio;
-    Tarefa* anterior = nullptr;
+    Tarefa* anterior = NULL;
     while (atual) {
         if (atual->id == id) {
             if (anterior) {
@@ -60,11 +59,11 @@ int remover_tarefa(Lista* lista, int id) {
             } else {
                 lista->inicio = atual->proxima;
             }
-            delete atual;
+            free(atual);
             return 1;
         }
         anterior = atual;
         atual = atual->proxima;
     }
     return 0;
-}
+} 

@@ -1,64 +1,58 @@
 #include "pilha.h"
-#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
 
-using namespace std;
-
-template <typename T>
-Pilha<T>::Pilha(int tamanho) {
-    elementos = new T[tamanho];
-    capacidade = tamanho;
-    topo = -1;
+void inicializar_pilha(Pilha* pilha) {
+    pilha->elementos = (Tarefa**)malloc(MAX_PILHA * sizeof(Tarefa*));
+    if (pilha->elementos == NULL) {
+        printf("Erro ao alocar memória para a pilha!\n");
+        exit(1);
+    }
+    pilha->topo = -1;
+    pilha->capacidade = MAX_PILHA;
 }
 
-template <typename T>
-Pilha<T>::~Pilha() {
-    delete[] elementos;
+void destruir_pilha(Pilha* pilha) {
+    free(pilha->elementos);
+    pilha->elementos = NULL;
+    pilha->topo = -1;
+    pilha->capacidade = 0;
 }
 
-template <typename T>
-void Pilha<T>::empilhar(T elemento) {
-    if (!cheia()) {
-        topo++;
-        elementos[topo] = elemento;
+void empilhar(Pilha* pilha, Tarefa* elemento) {
+    if (!pilha_cheia(pilha)) {
+        pilha->topo++;
+        pilha->elementos[pilha->topo] = elemento;
     } else {
-        cout << "Erro: Pilha cheia!" << endl;
+        printf("Erro: Pilha cheia!\n");
     }
 }
 
-template <typename T>
-T Pilha<T>::desempilhar() {
-    if (!vazia()) {
-        T elemento = elementos[topo];
-        topo--;
+Tarefa* desempilhar(Pilha* pilha) {
+    if (!pilha_vazia(pilha)) {
+        Tarefa* elemento = pilha->elementos[pilha->topo];
+        pilha->topo--;
         return elemento;
     }
-    cout << "Erro: Pilha vazia!" << endl;
-    return nullptr;
+    printf("Erro: Pilha vazia!\n");
+    return NULL;
 }
 
-template <typename T>
-T Pilha<T>::topoPilha() {
-    if (!vazia()) {
-        return elementos[topo];
+Tarefa* topo_pilha(Pilha* pilha) {
+    if (!pilha_vazia(pilha)) {
+        return pilha->elementos[pilha->topo];
     }
-    cout << "Erro: Pilha vazia!" << endl;
-    return nullptr;
+    return NULL;
 }
 
-template <typename T>
-bool Pilha<T>::vazia() {
-    return topo == -1;
+int pilha_vazia(Pilha* pilha) {
+    return pilha->topo == -1;
 }
 
-template <typename T>
-bool Pilha<T>::cheia() {
-    return topo == capacidade - 1;
+int pilha_cheia(Pilha* pilha) {
+    return pilha->topo == pilha->capacidade - 1;
 }
 
-template <typename T>
-int Pilha<T>::tamanho() {
-    return topo + 1;
-}
-
-// Instanciação explícita para o tipo Tarefa
-template class Pilha<Tarefa*>;
+int tamanho_pilha(Pilha* pilha) {
+    return pilha->topo + 1;
+} 
