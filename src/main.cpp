@@ -25,8 +25,9 @@ void menu() {
     printf("6. Remover tarefa\n");
     printf("7. Marcar tarefa como concluída\n");
     printf("8. Desfazer última ação\n");
-    printf("9. Salvar tarefas\n");
-    printf("10. Carregar tarefas\n");
+    printf("9. Processar tarefas na ordem de cadastro\n");
+    printf("10. Salvar tarefas\n");
+    printf("11. Carregar tarefas\n");
     printf("0. Sair\n");
     printf("Escolha uma opção: ");
 }
@@ -76,6 +77,91 @@ void editar_tarefa(Tarefa* tarefa) {
     fgets(data, MAX_DATA, stdin);
     data[strcspn(data, "\n")] = 0;
     if (strlen(data) > 0 && validar_data(data)) strcpy(tarefa->data, data);
+}
+
+void salvar_tarefas(Lista* lista) {
+    FILE* arquivo = fopen("tarefas.txt", "w");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir arquivo para salvar!\n");
+        return;
+    }
+
+    Tarefa* atual = lista->inicio;
+    while (atual != NULL) {
+        fprintf(arquivo, "%d|%s|%s|%d|%s|%d\n",
+                atual->id,
+                atual->titulo,
+                atual->descricao,
+                atual->prioridade,
+                atual->data,
+                atual->concluida);
+        atual = atual->proxima;
+    }
+
+    fclose(arquivo);
+    printf("Tarefas salvas com sucesso!\n");
+}
+
+void carregar_tarefas(Lista* lista, Fila* fila, Pilha* pilha) {
+    FILE* arquivo = fopen("tarefas.txt", "r");
+    if (arquivo == NULL) {
+        printf("Nenhum arquivo de tarefas encontrado!\n");
+        return;
+    }
+
+    // Limpar lista atual
+    Tarefa* atual = lista->inicio;
+    while (atual) {
+        Tarefa* tmp = atual;
+        atual = atual->proxima;
+        free(tmp);
+    }
+    lista->inicio = NULL;
+    lista->tamanho = 0;
+
+    // Limpar fila e pilha
+    while (!fila_vazia(fila)) {
+        desenfileirar(fila);
+    }
+    while (!pilha_vazia(pilha)) {
+        desempilhar(pilha);
+    }
+
+    char linha[1000];
+    while (fgets(linha, sizeof(linha), arquivo)) {
+        int id, prioridade, concluida;
+        char titulo[MAX_TITULO], descricao[MAX_DESC], data[MAX_DATA];
+        
+        char* token = strtok(linha, "|");
+        id = atoi(token);
+        
+        token = strtok(NULL, "|");
+        strcpy(titulo, token);
+        
+        token = strtok(NULL, "|");
+        strcpy(descricao, token);
+        
+        token = strtok(NULL, "|");
+        prioridade = atoi(token);
+        
+        token = strtok(NULL, "|");
+        strcpy(data, token);
+        
+        token = strtok(NULL, "|");
+        concluida = atoi(token);
+
+        Tarefa* novaTarefa = criar_tarefa(id, titulo, descricao, prioridade, data);
+        if (concluida) {
+            marcar_concluida(novaTarefa);
+        }
+        
+        inserir_fim(lista, novaTarefa);
+        enfileirar(fila, novaTarefa);
+        empilhar(pilha, novaTarefa);
+    }
+
+    fclose(arquivo);
+    printf("Tarefas carregadas com sucesso!\n");
 }
 
 int main() {
@@ -198,12 +284,20 @@ int main() {
                 printf("Funcionalidade em desenvolvimento...\n");
                 break;
 
-            case 9: // Salvar tarefas
-                printf("Funcionalidade em desenvolvimento...\n");
+            case 9: // Processar tarefas na ordem de cadastro
+                printf("\nProcessando tarefas na ordem de cadastro:\n");
+                while (!fila_vazia(&filaPrioridade)) {
+                    Tarefa* tarefa = desenfileirar(&filaPrioridade);
+                    imprimir_tarefa(tarefa);
+                }
                 break;
 
-            case 10: // Carregar tarefas
-                printf("Funcionalidade em desenvolvimento...\n");
+            case 10: // Salvar tarefas
+                salvar_tarefas(&lista);
+                break;
+
+            case 11: // Carregar tarefas
+                carregar_tarefas(&lista, &filaPrioridade, &pilhaAcoes);
                 break;
 
             case 0:

@@ -4,12 +4,8 @@
 
 void inicializar_fila(Fila* fila) {
     fila->elementos = (Tarefa**)malloc(MAX_FILA * sizeof(Tarefa*));
-    if (fila->elementos == NULL) {
-        printf("Erro ao alocar memória para a fila!\n");
-        exit(1);
-    }
     fila->frente = 0;
-    fila->tras = -1;
+    fila->tras = 0;
     fila->capacidade = MAX_FILA;
     fila->tamanho_atual = 0;
 }
@@ -18,15 +14,15 @@ void destruir_fila(Fila* fila) {
     free(fila->elementos);
     fila->elementos = NULL;
     fila->frente = 0;
-    fila->tras = -1;
+    fila->tras = 0;
     fila->capacidade = 0;
     fila->tamanho_atual = 0;
 }
 
 void enfileirar(Fila* fila, Tarefa* elemento) {
     if (!fila_cheia(fila)) {
-        fila->tras = (fila->tras + 1) % fila->capacidade;
         fila->elementos[fila->tras] = elemento;
+        fila->tras = (fila->tras + 1) % fila->capacidade;
         fila->tamanho_atual++;
     } else {
         printf("Erro: Fila cheia!\n");

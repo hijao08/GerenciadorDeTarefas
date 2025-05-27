@@ -5,6 +5,7 @@
 
 typedef struct {
     Tarefa* inicio;
+    int tamanho;
 } Lista;
 
 void inicializar_lista(Lista* lista);

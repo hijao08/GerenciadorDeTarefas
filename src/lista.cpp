@@ -4,6 +4,7 @@
 
 void inicializar_lista(Lista* lista) {
     lista->inicio = NULL;
+    lista->tamanho = 0;
 }
 
 void inserir_fim(Lista* lista, Tarefa* tarefa) {
@@ -16,6 +17,7 @@ void inserir_fim(Lista* lista, Tarefa* tarefa) {
         }
         atual->proxima = tarefa;
     }
+    lista->tamanho++;
 }
 
 void listar_tarefas(const Lista* lista) {
@@ -60,6 +62,7 @@ int remover_tarefa(Lista* lista, int id) {
                 lista->inicio = atual->proxima;
             }
             free(atual);
+            lista->tamanho--;
             return 1;
         }
         anterior = atual;
