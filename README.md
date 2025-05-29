@@ -142,6 +142,7 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 - João Vitor Soares - [@João Vitor Soares](https://github.com/hijao08)
 - Gustavo Almeida de Freitas - [@Gustavo Almeida de Freitas](https://github.com/gussfreitas)
 - Matheus Leite - [@Matheus Leite](https://github.com/Mathelico)
+- Brayan Wosch - [@Brayan Wosch](https://github.com/woschbrayan)
 
 ## 🙏 Agradecimentos
 
