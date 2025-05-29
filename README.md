@@ -96,7 +96,52 @@ g++ src/main.cpp src/lista.cpp src/tarefa.cpp src/pilha.cpp src/fila.cpp -o gere
 ./gerenciador
 ```
 
-## Requisitos
+2. Use o menu interativo para:
+   - Cadastrar novas tarefas
+   - Listar tarefas existentes
+   - Buscar tarefas específicas
+   - Editar tarefas
+   - Remover tarefas
+   - Marcar tarefas como concluídas
 
-- GCC ou outro compilador C++
+## 📦 Estrutura do Projeto
+
+```
+src/
+├── main.cpp      # Programa principal e interface do usuário
+├── tarefa.h      # Definição da estrutura de tarefas
+├── tarefa.cpp    # Implementação das funções de tarefas
+├── lista.h       # Definição da estrutura de lista
+├── lista.cpp     # Implementação das funções de lista
+├── pilha.h       # Definição da estrutura de pilha
+├── pilha.cpp     # Implementação das funções de pilha
+├── fila.h        # Definição da estrutura de fila
+└── fila.cpp      # Implementação das funções de fila
+```
+
+## 🛠️ Requisitos
+
+- GCC 7.0 ou superior
 - Sistema operacional Unix-like (Linux, macOS)
+- Make (opcional, para compilação automatizada)
+
+## 🤝 Contribuindo
+
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
+3. Commit suas mudanças (`git commit -m 'Adiciona nova feature'`)
+4. Push para a branch (`git push origin feature/nova-feature`)
+5. Abra um Pull Request
+
+## 📝 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+## 👥 Autores
+
+- Seu Nome - [@seu-usuario](https://github.com/seu-usuario)
+
+## 🙏 Agradecimentos
+
+- A todos os contribuidores que ajudaram no desenvolvimento deste projeto
+- À comunidade open source por inspirar e fornecer ferramentas essenciais
