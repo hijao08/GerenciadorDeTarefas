@@ -1,9 +1,10 @@
 #include "lista.h"
-#include <cstdio>
-#include <cstdlib>
+#include <stdio.h>
+#include <stdlib.h>
 
 void inicializar_lista(Lista* lista) {
-    lista->inicio = nullptr;
+    lista->inicio = NULL;
+    lista->tamanho = 0;
 }
 
 void inserir_fim(Lista* lista, Tarefa* tarefa) {
@@ -16,6 +17,7 @@ void inserir_fim(Lista* lista, Tarefa* tarefa) {
         }
         atual->proxima = tarefa;
     }
+    lista->tamanho++;
 }
 
 void listar_tarefas(const Lista* lista) {
@@ -31,9 +33,27 @@ void listar_tarefas(const Lista* lista) {
     }
 }
 
+void listar_tarefas_por_prioridade(const Lista* lista, int prioridade) {
+    Tarefa* atual = lista->inicio;
+    int encontrou = 0;
+    
+    while (atual) {
+        if (atual->prioridade == prioridade) {
+            imprimir_tarefa(atual);
+            printf("---------------------\n");
+            encontrou = 1;
+        }
+        atual = atual->proxima;
+    }
+    
+    if (!encontrou) {
+        printf("Nenhuma tarefa encontrada com prioridade %d!\n", prioridade);
+    }
+}
+
 int remover_tarefa(Lista* lista, int id) {
     Tarefa* atual = lista->inicio;
-    Tarefa* anterior = nullptr;
+    Tarefa* anterior = NULL;
     while (atual) {
         if (atual->id == id) {
             if (anterior) {
@@ -42,10 +62,11 @@ int remover_tarefa(Lista* lista, int id) {
                 lista->inicio = atual->proxima;
             }
             free(atual);
+            lista->tamanho--;
             return 1;
         }
         anterior = atual;
         atual = atual->proxima;
     }
     return 0;
-}
+} 

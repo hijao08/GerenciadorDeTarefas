@@ -1,0 +1,4 @@
+1|teste 1|teste 1|2|08/10/2004|0
+2|teste 2|teste 2|3|08/10/2004|0
+3|matheus leite pika|eu sou foda :D|1|11/03/2025|0
+4|teste 4|teste 4|5|08/10/2004|1

@@ -1,44 +1,96 @@
 # Gerenciador de Tarefas
 
-Um aplicativo de linha de comando em C++ para gerenciar tarefas e compromissos de forma eficiente.
+Um sistema de gerenciamento de tarefas implementado em C, utilizando estruturas de dados como Lista, Pilha e Fila.
 
-## 📋 Funcionalidades
+## Funcionalidades do Menu
 
-- ✨ Adicionar novas tarefas com título, descrição, prioridade e data
-- 📝 Listar todas as tarefas ou filtrar por prioridade
-- ✅ Marcar tarefas como concluídas
-- 🔍 Buscar tarefas por ID
-- ✏️ Editar tarefas existentes
-- 🗑️ Remover tarefas
-- ⭐ Gerenciar prioridades (1-5)
-- 📅 Organizar por data
-- 🔄 Desfazer última ação (em desenvolvimento)
-- 💾 Salvar e carregar tarefas (em desenvolvimento)
+### 1. Cadastrar tarefa
 
-## 🚀 Como Compilar
+- **Estruturas utilizadas**: Lista, Fila e Pilha
+- **Como funciona**:
+  - Cria uma nova tarefa com ID, título, descrição, prioridade e data
+  - Insere na Lista (para armazenamento principal)
+  - Enfileira na Fila (para processamento em ordem de cadastro)
+  - Empilha na Pilha (para histórico de ações)
 
-1. Certifique-se de ter o GCC instalado:
+### 2. Listar todas as tarefas
 
-```bash
-g++ --version
-```
+- **Estrutura utilizada**: Lista
+- **Como funciona**: Percorre a lista encadeada mostrando todas as tarefas cadastradas
 
-2. Clone o repositório:
+### 3. Listar tarefas por prioridade
 
-```bash
-git clone https://github.com/seu-usuario/gerenciador-tarefas.git
-cd gerenciador-tarefas
-```
+- **Estrutura utilizada**: Lista
+- **Como funciona**: Percorre a lista mostrando apenas as tarefas com a prioridade especificada
 
-3. Compile o projeto:
+### 4. Buscar tarefa
+
+- **Estrutura utilizada**: Lista
+- **Como funciona**: Busca uma tarefa específica pelo ID na lista
+
+### 5. Editar tarefa
+
+- **Estrutura utilizada**: Lista
+- **Como funciona**: Localiza a tarefa pelo ID e permite editar seus atributos
+
+### 6. Remover tarefa
+
+- **Estrutura utilizada**: Lista
+- **Como funciona**: Remove a tarefa da lista pelo ID
+
+### 7. Marcar tarefa como concluída
+
+- **Estrutura utilizada**: Lista
+- **Como funciona**: Localiza a tarefa pelo ID e marca como concluída
+
+### 8. Desfazer última ação
+
+- **Estrutura utilizada**: Pilha
+- **Como funciona**: Utiliza a pilha para desfazer a última ação realizada (em desenvolvimento)
+
+### 9. Processar tarefas na ordem de cadastro
+
+- **Estrutura utilizada**: Fila
+- **Como funciona**: Processa as tarefas na ordem em que foram cadastradas, usando a estrutura FIFO (First In, First Out) (em desenvolvimento)
+
+### 10. Salvar tarefas
+
+- **Estrutura utilizada**: Lista
+- **Como funciona**: Salva todas as tarefas da lista em um arquivo texto (tarefas.txt)
+
+### 11. Carregar tarefas
+
+- **Estruturas utilizadas**: Lista, Fila e Pilha
+- **Como funciona**:
+  - Lê as tarefas do arquivo texto
+  - Recria as estruturas de dados com as tarefas carregadas
+  - Mantém a ordem original das tarefas
+
+## Estruturas de Dados Utilizadas
+
+### Lista
+
+- Estrutura principal para armazenamento das tarefas
+- Implementada como lista encadeada
+- Mantém controle do tamanho atual
+
+### Fila
+
+- Usada para processar tarefas na ordem de cadastro (FIFO)
+- Útil para manter a ordem cronológica das tarefas
+
+### Pilha
+
+- Usada para histórico de ações
+- Permite implementar funcionalidade de desfazer (LIFO)
+
+## Compilação
 
 ```bash
 g++ src/main.cpp src/lista.cpp src/tarefa.cpp src/pilha.cpp src/fila.cpp -o gerenciador
 ```
 
-## 💻 Como Usar
-
-1. Execute o programa:
+## Execução
 
 ```bash
 ./gerenciador
@@ -87,7 +139,9 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ## 👥 Autores
 
-- Seu Nome - [@seu-usuario](https://github.com/seu-usuario)
+- João Vitor Soares - [@João Vitor Soares](https://github.com/hijao08)
+- Gustavo Almeida de Freitas - [@Gustavo Almeida de Freitas](https://github.com/gussfreitas)
+- Matheus Leite - [@Matheus Leite](https://github.com/Mathelico)
 
 ## 🙏 Agradecimentos
 
