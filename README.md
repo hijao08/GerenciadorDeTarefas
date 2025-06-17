@@ -43,15 +43,15 @@ Um sistema de gerenciamento de tarefas implementado em C, utilizando estruturas 
 - **Estrutura utilizada**: Lista
 - **Como funciona**: Localiza a tarefa pelo ID e marca como concluída
 
-### 8. Desfazer última ação
+### 8. Desfazer última criaçao de tarefa
 
 - **Estrutura utilizada**: Pilha
-- **Como funciona**: Utiliza a pilha para desfazer a última ação realizada (em desenvolvimento)
+- **Como funciona**: Utiliza a pilha para desfazer a última tarefa criada
 
 ### 9. Processar tarefas na ordem de cadastro
 
 - **Estrutura utilizada**: Fila
-- **Como funciona**: Processa as tarefas na ordem em que foram cadastradas, usando a estrutura FIFO (First In, First Out) (em desenvolvimento)
+- **Como funciona**: Processa as tarefas na ordem em que foram cadastradas, usando a estrutura FIFO (First In, First Out)
 
 ### 10. Salvar tarefas
 

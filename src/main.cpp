@@ -24,7 +24,7 @@ void menu() {
     printf("5. Editar tarefa\n");
     printf("6. Remover tarefa\n");
     printf("7. Marcar tarefa como concluída\n");
-    printf("8. Desfazer última ação\n");
+    printf("8. Desfazer última criação de tarefa\n");
     printf("9. Processar tarefas na ordem de cadastro\n");
     printf("10. Salvar tarefas\n");
     printf("11. Carregar tarefas\n");
@@ -102,7 +102,7 @@ void salvar_tarefas(Lista* lista) {
     printf("Tarefas salvas com sucesso!\n");
 }
 
-void carregar_tarefas(Lista* lista, Fila* fila, Pilha* pilha) {
+void carregar_tarefas(Lista* lista, Fila* filaPrioridade, Fila* filaOrdemCadastro, Pilha* pilha) {
     FILE* arquivo = fopen("tarefas.txt", "r");
     if (arquivo == NULL) {
         printf("Nenhum arquivo de tarefas encontrado!\n");
@@ -119,12 +119,16 @@ void carregar_tarefas(Lista* lista, Fila* fila, Pilha* pilha) {
     lista->inicio = NULL;
     lista->tamanho = 0;
 
-    // Limpar fila e pilha
-    while (!fila_vazia(fila)) {
-        desenfileirar(fila);
+    // Limpar filas e pilha
+    while (!fila_vazia(filaPrioridade)) {
+        desenfileirar(filaPrioridade);
+    }
+    while (!fila_vazia(filaOrdemCadastro)) {
+        desenfileirar(filaOrdemCadastro);
     }
     while (!pilha_vazia(pilha)) {
-        desempilhar(pilha);
+        Acao* acao = desempilhar(pilha);
+        if (acao) free(acao);
     }
 
     char linha[1000];
@@ -156,8 +160,9 @@ void carregar_tarefas(Lista* lista, Fila* fila, Pilha* pilha) {
         }
         
         inserir_fim(lista, novaTarefa);
-        enfileirar(fila, novaTarefa);
-        empilhar(pilha, novaTarefa);
+        enfileirar(filaPrioridade, novaTarefa);
+        enfileirar(filaOrdemCadastro, novaTarefa);
+        empilhar(pilha, ACAO_CRIAR, novaTarefa);
     }
 
     fclose(arquivo);
@@ -168,15 +173,19 @@ int main() {
     Lista lista;
     Pilha pilhaAcoes;
     Fila filaPrioridade;
+    Fila filaOrdemCadastro;  // Nova fila para ordem de cadastro
     
     inicializar_lista(&lista);
     inicializar_pilha(&pilhaAcoes);
     inicializar_fila(&filaPrioridade);
+    inicializar_fila(&filaOrdemCadastro);  // Inicializar nova fila
     
     int opcao, prioridade, id;
     char titulo[MAX_TITULO], descricao[MAX_DESC], data[MAX_DATA];
     Tarefa* novaTarefa = NULL;
     Tarefa* encontrada = NULL;
+    bool tarefa_processada = false;
+    Acao* ultima_acao = NULL;  // Movido para fora do switch
 
     do {
         menu();
@@ -209,7 +218,8 @@ int main() {
                 novaTarefa = criar_tarefa(id, titulo, descricao, prioridade, data);
                 inserir_fim(&lista, novaTarefa);
                 enfileirar(&filaPrioridade, novaTarefa);
-                empilhar(&pilhaAcoes, novaTarefa);
+                enfileirar(&filaOrdemCadastro, novaTarefa);
+                empilhar(&pilhaAcoes, ACAO_CRIAR, novaTarefa);
                 printf("Tarefa cadastrada com sucesso!\n");
                 break;
 
@@ -246,7 +256,21 @@ int main() {
                 getchar();
                 encontrada = buscar_tarefa(&lista, id);
                 if (encontrada) {
+                    // Guardar estado anterior
+                    char titulo_anterior[MAX_TITULO];
+                    char descricao_anterior[MAX_DESC];
+                    char data_anterior[MAX_DATA];
+                    int prioridade_anterior = encontrada->prioridade;
+                    int concluida_anterior = encontrada->concluida;
+                    
+                    strcpy(titulo_anterior, encontrada->titulo);
+                    strcpy(descricao_anterior, encontrada->descricao);
+                    strcpy(data_anterior, encontrada->data);
+                    
                     editar_tarefa(encontrada);
+                    empilhar_edicao(&pilhaAcoes, encontrada, titulo_anterior, 
+                                  descricao_anterior, data_anterior, 
+                                  prioridade_anterior, concluida_anterior);
                     printf("Tarefa atualizada com sucesso!\n");
                 } else {
                     printf("Tarefa não encontrada!\n");
@@ -256,8 +280,12 @@ int main() {
             case 6: // Remover tarefa
                 printf("Informe o ID da tarefa a remover: ");
                 scanf("%d", &id);
-                if (remover_tarefa(&lista, id)) {
-                    printf("Tarefa removida!\n");
+                encontrada = buscar_tarefa(&lista, id);
+                if (encontrada) {
+                    empilhar(&pilhaAcoes, ACAO_REMOVER, encontrada);
+                    if (remover_tarefa(&lista, id)) {
+                        printf("Tarefa removida!\n");
+                    }
                 } else {
                     printf("Tarefa não encontrada.\n");
                 }
@@ -272,6 +300,7 @@ int main() {
                     if (encontrada->concluida) {
                         printf("Tarefa já está concluída!\n");
                     } else {
+                        empilhar(&pilhaAcoes, ACAO_CONCLUIR, encontrada);
                         marcar_concluida(encontrada);
                         printf("Tarefa marcada como concluída!\n");
                     }
@@ -281,15 +310,90 @@ int main() {
                 break;
 
             case 8: // Desfazer última ação
-                printf("Funcionalidade em desenvolvimento...\n");
+                if (pilha_vazia(&pilhaAcoes)) {
+                    printf("Não há ações para desfazer!\n");
+                    break;
+                }
+
+                ultima_acao = desempilhar(&pilhaAcoes);
+                if (ultima_acao == NULL) {
+                    printf("Erro ao desfazer ação!\n");
+                    break;
+                }
+
+                switch (ultima_acao->tipo) {
+                    case ACAO_CRIAR:
+                        // Remover a tarefa da lista e das filas
+                        remover_tarefa(&lista, ultima_acao->tarefa->id);
+                        printf("Criação da tarefa desfeita!\n");
+                        break;
+
+                    case ACAO_EDITAR:
+                        // Restaurar estado anterior
+                        strcpy(ultima_acao->tarefa->titulo, ultima_acao->titulo_anterior);
+                        strcpy(ultima_acao->tarefa->descricao, ultima_acao->descricao_anterior);
+                        strcpy(ultima_acao->tarefa->data, ultima_acao->data_anterior);
+                        ultima_acao->tarefa->prioridade = ultima_acao->prioridade_anterior;
+                        ultima_acao->tarefa->concluida = ultima_acao->concluida_anterior;
+                        printf("Edição da tarefa desfeita!\n");
+                        break;
+
+                    case ACAO_REMOVER:
+                        // Restaurar a tarefa removida
+                        inserir_fim(&lista, ultima_acao->tarefa);
+                        enfileirar(&filaPrioridade, ultima_acao->tarefa);
+                        enfileirar(&filaOrdemCadastro, ultima_acao->tarefa);
+                        printf("Remoção da tarefa desfeita!\n");
+                        break;
+
+                    case ACAO_CONCLUIR:
+                        // Desmarcar como concluída
+                        ultima_acao->tarefa->concluida = 0;
+                        printf("Conclusão da tarefa desfeita!\n");
+                        break;
+                }
+
+                free(ultima_acao);
                 break;
 
             case 9: // Processar tarefas na ordem de cadastro
-                printf("\nProcessando tarefas na ordem de cadastro:\n");
-                while (!fila_vazia(&filaPrioridade)) {
-                    Tarefa* tarefa = desenfileirar(&filaPrioridade);
-                    imprimir_tarefa(tarefa);
+                printf("\nProcessando próxima tarefa na ordem de cadastro:\n");
+                if (fila_vazia(&filaOrdemCadastro)) {
+                    printf("Não há tarefas para processar!\n");
+                    break;
                 }
+                
+                // Criar uma fila temporária para manter as tarefas
+                Fila filaTemp;
+                inicializar_fila(&filaTemp);
+                
+                // Procurar a primeira tarefa não concluída
+                tarefa_processada = false;  // Apenas resetando a variável
+                while (!fila_vazia(&filaOrdemCadastro)) {
+                    Tarefa* tarefa = desenfileirar(&filaOrdemCadastro);
+                    
+                    if (!tarefa_processada && !tarefa->concluida) {
+                        printf("Processando tarefa:\n");
+                        imprimir_tarefa(tarefa);
+                        marcar_concluida(tarefa);
+                        printf("Tarefa marcada como concluída!\n");
+                        tarefa_processada = true;
+                    }
+                    
+                    enfileirar(&filaTemp, tarefa);
+                }
+                
+                if (!tarefa_processada) {
+                    printf("Todas as tarefas já estão concluídas!\n");
+                }
+                
+                // Restaurar as tarefas na fila original
+                while (!fila_vazia(&filaTemp)) {
+                    Tarefa* tarefa = desenfileirar(&filaTemp);
+                    enfileirar(&filaOrdemCadastro, tarefa);
+                }
+                
+                destruir_fila(&filaTemp);
                 break;
 
             case 10: // Salvar tarefas
@@ -297,7 +401,7 @@ int main() {
                 break;
 
             case 11: // Carregar tarefas
-                carregar_tarefas(&lista, &filaPrioridade, &pilhaAcoes);
+                carregar_tarefas(&lista, &filaPrioridade, &filaOrdemCadastro, &pilhaAcoes);
                 break;
 
             case 0:
@@ -319,6 +423,7 @@ int main() {
 
     destruir_pilha(&pilhaAcoes);
     destruir_fila(&filaPrioridade);
+    destruir_fila(&filaOrdemCadastro);  // Destruir a nova fila
 
     return 0;
 } 
