@@ -24,7 +24,7 @@ void menu() {
     printf("5. Editar tarefa\n");
     printf("6. Remover tarefa\n");
     printf("7. Marcar tarefa como concluída\n");
-    printf("8. Desfazer última criação de tarefa\n");
+    printf("8. Desfazer última criação/edição de tarefa\n");
     printf("9. Processar tarefas na ordem de cadastro\n");
     printf("10. Salvar tarefas\n");
     printf("11. Carregar tarefas\n");

@@ -43,7 +43,7 @@ Um sistema de gerenciamento de tarefas implementado em C, utilizando estruturas 
 - **Estrutura utilizada**: Lista
 - **Como funciona**: Localiza a tarefa pelo ID e marca como concluída
 
-### 8. Desfazer última criaçao de tarefa
+### 8. Desfazer última criaçao/ediçao de tarefa
 
 - **Estrutura utilizada**: Pilha
 - **Como funciona**: Utiliza a pilha para desfazer a última tarefa criada
